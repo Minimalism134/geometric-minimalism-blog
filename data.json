@@ -1,0 +1,74 @@
+{
+  "series": [
+    {
+      "id": "minimalist-architecture",
+      "title": "极简建筑美学",
+      "description": "探索现代建筑中极简主义的应用与演变，从包豪斯到当代数字建筑。",
+      "coverImage": "https://images.unsplash.com/photo-1486718448742-1666229e2111?auto=format&fit=crop&q=80&w=1000",
+      "articleIds": [
+        "modern-triangles",
+        "rose-gold-era"
+      ],
+      "date": "2024"
+    },
+    {
+      "id": "digital-philosophy",
+      "title": "数字哲学思考",
+      "description": "在信息过载的时代，如何通过设计减法重构人与数字世界的交互关系。",
+      "coverImage": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=1000",
+      "articleIds": [
+        "subtraction-tool",
+        "web-4-patterns"
+      ],
+      "date": "2024"
+    }
+  ],
+  "articles": [
+    {
+      "id": "modern-triangles",
+      "title": "现代主义中的三角形之美",
+      "excerpt": "简单的几何形状如何重新定义现代住宅建筑的景观。探讨基本几何元素在空间塑造中的核心作用。",
+      "content": "极简主义并非事物的缺失，而是事物的恰到好处...",
+      "coverImage": "https://lh3.googleusercontent.com/aida-public/AB6AXuAwg6eHW2gqMbW5HgnfO2LImSYo5fH9A9NfLVirzon0qJTIj5-X9fGnE12T7lkcppzKBtVrOPXlbn7NQZmDa5LKUfMu3J4hIoKHBOeACyTshz-HsuS04-RDYwAu7dnM8ov6Wgw_sKcrpFos3pdSNYgpXpMfRo8D8XjaH1GwhqywRHjSTz7OvbAYxU3nxRBr-VrxW3Y18apnuDjTRLpVnGzV-puLxOdGnULJv_vO0sIRgfref7E3s6rPj1_oz-yfK6_zQzeSoo_KaQKI",
+      "date": "2024年3月12日",
+      "readingTime": "8 分钟",
+      "tags": [
+        {
+          "label": "设计",
+          "color": "#B76E79"
+        },
+        {
+          "label": "建筑",
+          "color": "#4b91e2"
+        }
+      ],
+      "author": {
+        "name": "Alex V. Frame",
+        "role": "数学与AI、数字游民",
+        "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBcvJN_miyqbkNo01RA58Tt9k0QjtAGKJIQfqPKDNgvM1cLfzv6AC0EQeS5CESA9kJxWmlBqu0f1gUr9ACkJyhfF82x3VtzKrjpHjywP_jqaMyMUEBiK_labvLmdI_Op1VaR38Hz1064BOnB6oJVldfafmQ_GRosxw7PYk5OKBg3QorLNoyZCv78W1S7A5CZ-97rru1KO52z-ZDjA1d_BId6uPILLsTmmWqkBvrHGqVi7Xk6GbGdFuLmFg9rbtovMs-s5lsw6COsdTM",
+        "bio": "记录数学AI与数字极简主义的交汇点。"
+      }
+    },
+    {
+      "id": "article-3f017e78-b564-4737-88d9-f64b54094a4a",
+      "title": "发生",
+      "excerpt": "发达",
+      "content": "分行的啊哈搭嘎搭嘎撒说法",
+      "coverImage": "",
+      "date": "2026年1月20日",
+      "readingTime": "1 分钟",
+      "tags": [
+        {
+          "label": "数学",
+          "color": "#4b91e2"
+        }
+      ],
+      "author": {
+        "name": "Alex V. Frame",
+        "role": "数学与AI、数字游民",
+        "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBcvJN_miyqbkNo01RA58Tt9k0QjtAGKJIQfqPKDNgvM1cLfzv6AC0EQeS5CESA9kJxWmlBqu0f1gUr9ACkJyhfF82x3VtzKrjpHjywP_jqaMyMUEBiK_labvLmdI_Op1VaR38Hz1064BOnB6oJVldfafmQ_GRosxw7PYk5OKBg3QorLNoyZCv78W1S7A5CZ-97rru1KO52z-ZDjA1d_BId6uPILLsTmmWqkBvrHGqVi7Xk6GbGdFuLmFg9rbtovMs-s5lsw6COsdTM",
+        "bio": "记录数学AI与数字极简主义的交汇点。"
+      }
+    }
+  ]
+}

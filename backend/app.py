@@ -6,8 +6,9 @@ import json
 import os
 
 app = Flask(__name__)
-# Enable CORS for all routes, allowing requests from the frontend
+# Enable CORS for all routes (API)
 CORS(app)
+
 
 DATA_FILE = "data.json"
 
@@ -105,6 +106,15 @@ def delete_series(series_id):
     save_data(db)
     return jsonify({"message": "Deleted successfully"}), 200
 
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.json
+    password = data.get('password')
+    # Simple hardcoded password for demonstration
+    if password == "admin888":
+        return jsonify({"success": True, "token": "simple-demo-token"}), 200
+    return jsonify({"error": "Invalid password"}), 401
+
 # --- Article Endpoints ---
 
 @app.route('/api/articles', methods=['GET'])
@@ -154,19 +164,28 @@ def delete_article(article_id):
 
 # --- AI Endpoints ---
 from ai_service import ModelFactory
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (if it exists)
+load_dotenv()
 
 def load_ai_key(provider="siliconflow"):
-    # Simple .env reader for backend
+    # Try to get from environment variables (loaded by dotenv or system)
+    key = os.environ.get(f"{provider.upper()}_API_KEY")
+    if key:
+        return key.strip()
+    
+    # Fallback: Try reading .env.local from parent directory (dev environment)
     try:
         env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env.local')
         if os.path.exists(env_path):
-            with open(env_path, 'r') as f:
+            with open(env_path, 'r', encoding='utf-8') as f:
                 for line in f:
-                    if line.startswith('SILICONFLOW_API_KEY=') and provider == 'siliconflow':
+                    if line.strip().startswith(f'{provider.upper()}_API_KEY='):
                         return line.split('=', 1)[1].strip()
     except:
         pass
-    return os.environ.get(f"{provider.upper()}_API_KEY")
+    return None
 
 @app.route('/api/ai/chat', methods=['POST'])
 def ai_chat():
@@ -235,6 +254,61 @@ def ai_summary():
         return jsonify({"summary": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/ai/key_points', methods=['POST'])
+def ai_key_points():
+    data = request.json
+    content = data.get('content')
+    provider_type = data.get('provider', 'siliconflow')
+    
+    if not content:
+        return jsonify({"error": "Content is required"}), 400
+
+    api_key = load_ai_key(provider_type)
+    if not api_key:
+        return jsonify({"error": f"API Key for {provider_type} not found"}), 500
+
+    try:
+        provider_instance = ModelFactory.get_provider(provider_type, api_key)
+        # Check if provider has extract_key_points method
+        if hasattr(provider_instance, 'extract_key_points'):
+            response = provider_instance.extract_key_points(content)
+            return jsonify({"key_points": response})
+        else:
+            return jsonify({"error": "Provider does not support extracting key points"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/ai/generate_cover', methods=['POST'])
+def ai_generate_cover():
+    data = request.json
+    title = data.get('title')
+    provider_type = data.get('provider', 'siliconflow')
+    
+    if not title:
+        return jsonify({"error": "Title is required"}), 400
+
+    api_key = load_ai_key(provider_type)
+    
+    # 1. Generate an optimized visual prompt using LLM
+    try:
+        if api_key:
+            provider_instance = ModelFactory.get_provider(provider_type, api_key)
+            # Ask LLM to create a prompt for Pollinations
+            prompt_request = f"Create a short, descriptive English prompt for an abstract, geometric minimalist style image based on this article title: '{title}'. The image should be high aesthetic, suitable for a blog cover. Output ONLY the English prompt."
+            visual_prompt = provider_instance.chat(prompt_request)
+        else:
+            visual_prompt = f"abstract geometric minimalism, {title}" 
+            
+        # 2. Construct Pollinations URL (encode it properly)
+        import urllib.parse
+        encoded_prompt = urllib.parse.quote(visual_prompt.strip())
+        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1280&height=720&nologo=true"
+        
+        return jsonify({"image_url": image_url, "prompt": visual_prompt})
+
+    except Exception as e:
+         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     print("Starting Flask server on port 5000...")

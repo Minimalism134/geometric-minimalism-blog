@@ -1,5 +1,5 @@
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000/api/ai';
+const API_BASE = '/api/ai';
 
 export async function summarizeArticle(title: string, content: string, provider = 'siliconflow') {
   try {
@@ -17,6 +17,38 @@ export async function summarizeArticle(title: string, content: string, provider 
   } catch (error) {
     console.error("AI Summary Error:", error);
     return "无法生成摘要，请稍后再试。";
+  }
+}
+
+export async function extractKeyPoints(content: string, provider = 'siliconflow') {
+  try {
+    const response = await fetch(`${API_BASE}/key_points`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content, provider })
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return data.key_points || "无法提取要点。";
+  } catch (error) {
+    console.error("AI Key Points Error:", error);
+    return "无法提取核心要点。";
+  }
+}
+
+export async function generateCoverImage(title: string, provider = 'siliconflow') {
+  try {
+    const response = await fetch(`${API_BASE}/generate_cover`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, provider })
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return data.image_url;
+  } catch (error) {
+    console.error("AI Cover Gen Error:", error);
+    return null;
   }
 }
 

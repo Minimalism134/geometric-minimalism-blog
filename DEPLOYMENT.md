@@ -15,7 +15,7 @@
 ### 1.2 连接服务器
 使用 SSH 工具 (如 Putty, Xshell 或终端) 连接到你的服务器:
 ```bash
-ssh root@<你的公网IP>
+ssh root@47.122.118.253
 ```
 
 ---
@@ -105,13 +105,18 @@ cd project
     cd /opt/project
     npm install
     
-    # 设置后端 API 地址 (这里填你的服务器公网IP或域名，注意加上 /api/ai)
-    # 如果 Nginx 配置了反向代理 (见下文)，这里可以填 "/api/ai" (相对路径)
-    export VITE_API_BASE_URL=/api/ai
-    
     npm run build
     ```
+    *注意：代码已配置为在生产环境自动使用相对路径 `/api`，配合下文的 Nginx 反向代理配置，前端请求会自动转发给后端，无需手动设置环境变量。*
     构建完成后，你会看到一个 `dist` 文件夹。
+
+    **关键步骤：上传静态文件**
+    如果你是在本地电脑执行的构建，需要将 `dist` 文件夹上传到服务器：
+    ```bash
+    # 在本地终端执行 (替换 <你的公网IP>)
+    scp -r dist root@47.122.118.253:/opt/project/
+    ```
+    *确保服务器上的 `/opt/project/dist` 目录是最新的构建结果。*
 
 2.  **配置 Nginx**:
     编辑 Nginx 配置文件:
@@ -152,7 +157,7 @@ cd project
 
 ## 4. 完成验证
 
-1.  打开浏览器，访问 `http://<你的公网IP>`。
+1.  打开浏览器，访问 `http://47.122.118.253`。
 2.  你应该能看到博客首页。
 3.  点击右下角 AI 助手，测试对话功能。如果回答正常，说明后端代理成功。
 
@@ -162,7 +167,7 @@ cd project
     *   检查阿里云控制台【安全组】是否开放了 80 端口。
     *   检查 Nginx 是否运行: `systemctl status nginx`。
 *   **AI 报错 "Network Error"?**
-    *   检查 Gunicorn 是否在后台运行: `ps aux | grep gunicorn`。
+    *   检查 Gunicorn 是否在后台运行: `ps aux | grep gunicorn`。0
     *   检查 Nginx 反向代理配置中的 `proxy_pass` 端口是否与 Gunicorn 端口一致。
 *   **页面刷新 404?**
     *   确保 Nginx 配置中加了 `try_files $uri $uri/ /index.html;`。

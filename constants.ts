@@ -1,7 +1,7 @@
 
 import { Article, Author, Series } from './types';
 
-export const SITE_NAME = "GEOMETRIC";
+export const SITE_NAME = "几何美学";
 
 export const DEFAULT_AUTHOR: Author = {
   name: "Alex V. Frame",

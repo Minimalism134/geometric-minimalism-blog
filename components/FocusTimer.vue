@@ -98,10 +98,10 @@ onUnmounted(() => {
           {{ formattedTime }}
         </span>
         <span class="text-xs uppercase font-bold tracking-[0.3em] text-white/40 mt-4 animate-pulse" v-if="isActive">
-          Focusing
+          专注中
         </span>
         <span class="text-xs uppercase font-bold tracking-[0.3em] text-white/40 mt-4 group-hover:text-primary transition-colors" v-else>
-          Press to Start
+          点击开始
         </span>
       </div>
     </div>

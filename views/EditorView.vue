@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getArticles, createArticle, updateArticle, deleteArticle } from '../services/api';
+import { generateCoverImage } from '../services/geminiService';
 import { Article } from '../types';
 
 const route = useRoute();
@@ -9,6 +10,7 @@ const router = useRouter();
 const articles = ref<Article[]>([]);
 const isEditing = ref(false);
 const editingId = ref<string | null>(null);
+const generatingCover = ref(false);
 
 const AVAILABLE_CATEGORIES = [
   { label: '数学', color: '#4b91e2' },
@@ -78,6 +80,28 @@ const showFeedback = (text: string, type: 'success' | 'error' = 'success') => {
   setTimeout(() => {
     feedbackMessage.value = null;
   }, 3000);
+};
+
+const handleGenerateCover = async () => {
+  if (!form.value.title) {
+    showFeedback('请先输入文章标题', 'error');
+    return;
+  }
+  
+  generatingCover.value = true;
+  try {
+    const url = await generateCoverImage(form.value.title);
+    if (url) {
+      form.value.coverImage = url;
+      showFeedback('封面生成成功！');
+    } else {
+      showFeedback('封面生成失败', 'error');
+    }
+  } catch (e) {
+    showFeedback('生成出错: ' + e, 'error');
+  } finally {
+    generatingCover.value = false;
+  }
 };
 
 const saveArticle = async () => {
@@ -192,7 +216,17 @@ onMounted(loadArticles);
 
         <div class="flex flex-col gap-2">
           <label class="text-[10px] uppercase font-black tracking-wider text-white/50">封面图片 URL</label>
-          <input v-model="form.coverImage" class="bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-accent outline-none transition-colors" placeholder="https://..." />
+          <div class="flex gap-2">
+            <input v-model="form.coverImage" class="flex-1 bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-accent outline-none transition-colors" placeholder="https://..." />
+            <button 
+              @click="handleGenerateCover" 
+              class="px-4 bg-white/5 rounded-lg border border-white/10 hover:bg-accent hover:border-accent hover:text-white text-white/50 transition-all flex items-center gap-2"
+              :disabled="generatingCover"
+            >
+              <span class="material-symbols-outlined text-base" :class="{ 'animate-spin': generatingCover }">{{ generatingCover ? 'refresh' : 'auto_awesome' }}</span>
+              <span class="text-xs font-bold uppercase tracking-widest hidden md:inline">{{ generatingCover ? '生成的...' : 'AI 生成' }}</span>
+            </button>
+          </div>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -202,7 +236,7 @@ onMounted(loadArticles);
 
         <div class="flex flex-col gap-2 flex-1">
           <label class="text-[10px] uppercase font-black tracking-wider text-white/50">内容 (Markdown)</label>
-          <textarea v-model="form.content" rows="12" class="bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-accent outline-none transition-colors font-mono text-sm leading-relaxed" placeholder="# Write your masterpiece here..."></textarea>
+          <textarea v-model="form.content" rows="12" class="bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-accent outline-none transition-colors font-mono text-sm leading-relaxed" placeholder="# 在此挥洒你的灵感..."></textarea>
         </div>
 
         <div class="flex justify-end gap-4 pt-4 border-t border-white/5">

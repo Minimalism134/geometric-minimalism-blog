@@ -1,6 +1,7 @@
 
 import { reactive } from 'vue';
 import { Series } from '../types';
+import { getSeries, createSeries, updateSeries, deleteSeries } from '../services/api';
 
 export const seriesStore = reactive({
     series: [] as Series[],
@@ -10,9 +11,7 @@ export const seriesStore = reactive({
     async fetchSeries() {
         this.loading = true;
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/series');
-            if (!response.ok) throw new Error('Failed to fetch series');
-            this.series = await response.json();
+            this.series = await getSeries();
         } catch (err) {
             this.error = (err as Error).message;
             console.error(err);
@@ -23,15 +22,7 @@ export const seriesStore = reactive({
 
     async addSeries(newSeries: Partial<Series>) {
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/series', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newSeries),
-            });
-            if (!response.ok) throw new Error('Failed to create series');
-            const createdSeries = await response.json();
+            const createdSeries = await createSeries(newSeries);
             this.series.push(createdSeries);
         } catch (err) {
             this.error = "Failed to add series";
@@ -40,15 +31,7 @@ export const seriesStore = reactive({
 
     async updateSeries(id: string, updatedSeries: Partial<Series>) {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/series/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedSeries),
-            });
-            if (!response.ok) throw new Error('Failed to update series');
-            const result = await response.json();
+            const result = await updateSeries(id, updatedSeries);
             const index = this.series.findIndex(s => s.id === id);
             if (index !== -1) {
                 this.series[index] = { ...this.series[index], ...result };
@@ -61,10 +44,7 @@ export const seriesStore = reactive({
 
     async removeSeries(id: string) {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/series/${id}`, {
-                method: 'DELETE',
-            });
-            if (!response.ok) throw new Error('Failed to delete series');
+            await deleteSeries(id);
             this.series = this.series.filter(s => s.id !== id);
         } catch (err) {
             console.error(err);

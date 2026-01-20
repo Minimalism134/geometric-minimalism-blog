@@ -29,6 +29,8 @@ const loadArticles = async () => {
   }
 };
 
+
+
 const removeArticle = async (id: string) => {
   if (!confirm('确定要删除这篇文章吗？')) return;
   try {
@@ -101,33 +103,54 @@ const toggleFilter = (label: string) => {
               <div class="size-2 rounded-full" :style="{ backgroundColor: topic.color }"></div>
               <span class="text-xs font-bold uppercase tracking-widest">{{ topic.label }}</span>
             </div>
-            <span class="material-symbols-outlined text-sm transition-opacity" :class="currentFilter === topic.label ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'">chevron_right</span>
+
           </div>
         </div>
       </div>
 
+      <!-- Sidebar Button -->
       <div class="flex flex-col gap-6 mt-6">
          <button 
            @click="openChat"
-           class="w-full bg-white text-black font-black py-4 rounded-xl text-xs uppercase tracking-[0.2em] hover:bg-accent hover:text-white transition-all transform active:scale-95 shadow-xl shadow-black/20 flex items-center justify-center gap-2"
+           class="w-full relative overflow-hidden group rounded-xl p-[1px]"
          >
-            <span class="material-symbols-outlined">smart_toy</span>
-            AI 助手
+           <div class="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary opacity-50 group-hover:opacity-100 transition-opacity duration-500 animate-gradient"></div>
+           <div class="relative bg-black/90 rounded-[11px] py-4 flex items-center justify-center gap-3 backdrop-blur-xl group-hover:bg-black/80 transition-colors">
+              <span class="material-symbols-outlined text-accent group-hover:text-white transition-colors">auto_awesome</span>
+              <span class="text-xs font-black uppercase tracking-[0.2em] text-white/90 group-hover:text-white transition-colors">AI 智能助手</span>
+           </div>
          </button>
       </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col gap-16">
+    <main class="flex-1 flex flex-col gap-10 lg:gap-16">
       <header class="flex flex-col gap-4">
         <p class="text-primary font-black tracking-[0.5em] uppercase text-[10px]">
-          {{ currentFilter ? `Archives / ${currentFilter}` : 'Archives / 2024' }}
+          {{ currentFilter ? `文章归档 / ${currentFilter}` : '文章归档 / 2024' }}
         </p>
-        <h2 class="text-6xl font-black tracking-tighter leading-none italic">
-          {{ currentFilter ? `${currentFilter}专题` : '建筑与' }}<br/>
-          {{ currentFilter ? '精选文章' : '数字游民' }}
+        <h2 class="text-4xl lg:text-6xl font-black tracking-tighter leading-none italic">
+          <template v-if="currentFilter">
+            {{ currentFilter }}专题<br/>精选文章
+          </template>
+          <template v-else>
+            数字游民
+          </template>
         </h2>
       </header>
+
+      <!-- Mobile Filters (Horizontal Scroll) -->
+      <div class="lg:hidden flex gap-3 overflow-x-auto pb-4 -mx-6 px-6 no-scrollbar snap-x">
+         <div 
+            v-for="(topic, i) in topics"
+            :key="i"
+            @click="toggleFilter(topic.label)"
+            class="snap-start shrink-0 px-4 py-2 rounded-full border text-xs font-bold uppercase tracking-widest whitespace-nowrap transition-colors"
+            :class="currentFilter === topic.label ? 'bg-primary border-primary text-white' : 'bg-white/5 border-white/10 text-white/60'"
+         >
+            {{ topic.label }}
+         </div>
+      </div>
 
       <div class="columns-1 md:columns-2 gap-8 space-y-8">
         <ArticleCard 
@@ -140,19 +163,20 @@ const toggleFilter = (label: string) => {
         />
       </div>
 
+      <!-- Mobile AI Chat FAB -->
+      <button 
+        @click="openChat"
+        class="lg:hidden fixed bottom-6 right-6 size-14 rounded-full bg-gradient-to-br from-accent to-primary text-white shadow-lg shadow-accent/30 z-40 flex items-center justify-center active:scale-95 transition-transform hover:scale-110"
+      >
+        <span class="material-symbols-outlined text-xl">auto_awesome</span>
+      </button>
+
       <div v-if="filteredArticles.length === 0" class="flex flex-col items-center justify-center py-20 opacity-50">
         <span class="material-symbols-outlined text-4xl mb-4">content_paste_off</span>
         <p class="text-sm uppercase tracking-widest">该分类下暂无文章</p>
       </div>
 
-      <div v-if="filteredArticles.length > 0" class="flex justify-center py-20">
-        <button class="group flex flex-col items-center gap-4">
-          <div class="size-20 rounded-full bg-surface border border-white/10 flex items-center justify-center text-white transition-all duration-500 group-hover:scale-110 group-hover:border-primary group-hover:shadow-[0_0_30px_rgba(75,145,226,0.3)]">
-            <span class="material-symbols-outlined text-4xl font-light">keyboard_double_arrow_down</span>
-          </div>
-          <span class="text-[10px] font-black tracking-[0.5em] uppercase text-white/40 group-hover:text-primary transition-colors">加载更多内容</span>
-        </button>
-      </div>
+
     </main>
   </div>
 </template>

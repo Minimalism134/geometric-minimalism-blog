@@ -1,5 +1,6 @@
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { Article } from '../types';
 
 defineProps<{
@@ -11,10 +12,21 @@ defineEmits<{
   (e: 'edit'): void;
   (e: 'delete'): void;
 }>();
+
+const isLoggedIn = ref(false);
+const checkAuth = () => {
+    isLoggedIn.value = !!localStorage.getItem('auth_token');
+};
+
+onMounted(() => {
+    checkAuth();
+    // Listen for global auth changes if needed, or just check on mount since card re-renders
+    window.addEventListener('auth-change', checkAuth);
+});
 </script>
 
 <template>
-  <div class="break-inside-avoid block glass-card rounded-xl overflow-hidden group mb-6 transition-all duration-500 hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-primary/10 relative">
+  <div class="break-inside-avoid block glass-card rounded-xl overflow-hidden group mb-6 transition-all duration-500 hover:translate-y-[-4px] hover:shadow-xl hover:shadow-primary/5 active:scale-[0.99] active:translate-y-0 relative">
     <router-link :to="`/article/${article.id}`" class="block h-full cursor-pointer">
       <div v-if="article.coverImage" :class="featured ? 'h-72' : 'h-48'" class="bg-cover bg-center overflow-hidden relative">
         <div 
@@ -45,27 +57,25 @@ defineEmits<{
           <span class="text-[10px] text-white/30 uppercase font-bold tracking-[0.2em]">{{ article.date }}</span>
           <div class="flex items-center gap-1 group-hover:gap-2 transition-all">
             <span class="text-[10px] uppercase font-bold tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">阅读全文</span>
-            <span class="material-symbols-outlined text-lg" :class="featured ? 'text-primary' : 'text-accent'">
-              arrow_right_alt
-            </span>
+
           </div>
         </div>
       </div>
     </router-link>
 
     <!-- Admin Controls -->
-    <div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+    <div v-if="isLoggedIn" class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
       <button 
         @click.stop="$emit('edit')" 
         class="size-8 rounded-full bg-black/50 backdrop-blur border border-white/10 flex items-center justify-center text-white/70 hover:bg-primary hover:text-white transition-colors"
-        title="编辑 (Edit)"
+        title="编辑"
       >
         <span class="material-symbols-outlined text-sm">edit</span>
       </button>
       <button 
         @click.stop="$emit('delete')" 
         class="size-8 rounded-full bg-black/50 backdrop-blur border border-white/10 flex items-center justify-center text-white/70 hover:bg-red-500 hover:text-white transition-colors"
-        title="删除 (Delete)"
+        title="删除"
       >
         <span class="material-symbols-outlined text-sm">delete</span>
       </button>

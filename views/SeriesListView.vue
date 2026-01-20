@@ -6,6 +6,11 @@ import { Series } from '../types';
 
 const showModal = ref(false);
 const editingId = ref<string | null>(null);
+const isLoggedIn = ref(false);
+
+const checkAuth = () => {
+    isLoggedIn.value = !!localStorage.getItem('auth_token');
+};
 
 const form = reactive({
   title: '',
@@ -58,6 +63,8 @@ const handleDelete = async (id: string) => {
 
 onMounted(() => {
   seriesStore.fetchSeries();
+  checkAuth();
+  window.addEventListener('auth-change', checkAuth);
 });
 </script>
 
@@ -65,13 +72,14 @@ onMounted(() => {
   <div class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-6 py-16 gap-16 relative">
     <header class="flex flex-col gap-4">
       <div class="flex items-center justify-between">
-        <p class="text-accent font-black tracking-[0.5em] uppercase text-[10px]">Series / 2024</p>
+        <p class="text-accent font-black tracking-[0.5em] uppercase text-[10px]">系列 / 2024</p>
         <button 
+          v-if="isLoggedIn"
           @click="openCreateModal"
           class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-accent rounded-lg transition-colors group"
         >
           <span class="material-symbols-outlined text-sm text-white/60 group-hover:text-white">add</span>
-          <span class="text-xs font-bold uppercase tracking-widest text-white/60 group-hover:text-white">New Series</span>
+          <span class="text-xs font-bold uppercase tracking-widest text-white/60 group-hover:text-white">新专题</span>
         </button>
       </div>
       <h2 class="text-6xl font-black tracking-tighter leading-none italic">系列专题</h2>
@@ -91,6 +99,7 @@ onMounted(() => {
       
       <!-- Empty State / Add Placeholder -->
       <button 
+        v-if="isLoggedIn"
         @click="openCreateModal"
         class="group relative h-[420px] rounded-2xl border-2 border-dashed border-white/5 hover:border-accent/40 flex flex-col items-center justify-center gap-4 transition-all hover:bg-white/[0.02]"
       >

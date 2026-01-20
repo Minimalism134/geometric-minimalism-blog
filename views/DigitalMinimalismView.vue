@@ -4,11 +4,11 @@ import { ref } from 'vue';
 import FocusTimer from '../components/FocusTimer.vue';
 
 const checklistItems = ref([
-  { id: 1, text: "关闭非必要通知 (Turn off non-essential notifications)", checked: false },
-  { id: 2, text: "清理桌面图标 (Clean up desktop icons)", checked: false },
-  { id: 3, text: "取消关注 5 个账号 (Unfollow 5 accounts)", checked: false },
-  { id: 4, text: "整理收件箱 (Organize inbox)", checked: false },
-  { id: 5, text: "设定今日无手机时间 (Set phone-free time)", checked: false },
+  { id: 1, text: "关闭非必要通知", checked: false },
+  { id: 2, text: "清理桌面图标", checked: false },
+  { id: 3, text: "取消关注 5 个账号", checked: false },
+  { id: 4, text: "整理收件箱", checked: false },
+  { id: 5, text: "设定今日无手机时间", checked: false },
 ]);
 
 // Load from local storage if available could be added here
@@ -19,17 +19,17 @@ const toggleItem = (id: number) => {
 
 const principles = [
   {
-    title: "Intentionality",
+    title: "意向性 (Intentionality)",
     desc: "数字极简主义不仅仅是不使用技术，而是有目的地使用它。每一个数字工具都应该有一个明确的服务于你生活价值的目标。",
     icon: "adjust"
   },
   {
-    title: "Solitude",
+    title: "独处 (Solitude)",
     desc: "在没有输入的情况下独处的能力。在这个时刻，我们处理思想，定义自我。数字噪音常常剥夺了我们这种至关重要的精神空间。",
     icon: "self_improvement"
   },
   {
-    title: "Quality",
+    title: "质量 (Quality)",
     desc: "用更少但更好的数字活动取代大量低价值的点击。深度阅读一篇文章胜过浏览一百条推文。",
     icon: "diamond"
   }
@@ -44,7 +44,7 @@ const principles = [
       <div class="absolute top-[20%] left-[10%] w-64 h-64 border border-white/5 rounded-full animate-spin-slow" />
       <div class="absolute bottom-[20%] right-[10%] w-96 h-96 border border-white/5 rounded-full animate-reverse-spin-slow" />
       
-      <p class="text-accent font-black tracking-[0.5em] uppercase text-[10px] mb-6">Digital Nomad</p>
+      <p class="text-accent font-black tracking-[0.5em] uppercase text-[10px] mb-6">数字游民</p>
       <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-none italic text-center mb-8 bg-gradient-to-b from-white to-white/20 bg-clip-text text-transparent">
         重获<br/>专注力
       </h1>
@@ -65,15 +65,15 @@ const principles = [
           <ul class="flex flex-col gap-4 mt-4">
              <li class="flex items-center gap-4 text-white/50 text-sm">
                <span class="material-symbols-outlined text-accent">check_circle</span>
-               <span>单任务处理 (Single-tasking)</span>
+               <span>单任务处理</span>
              </li>
              <li class="flex items-center gap-4 text-white/50 text-sm">
                <span class="material-symbols-outlined text-accent">check_circle</span>
-               <span>消除干扰 (Eliminate distractions)</span>
+               <span>消除干扰</span>
              </li>
              <li class="flex items-center gap-4 text-white/50 text-sm">
                <span class="material-symbols-outlined text-accent">check_circle</span>
-               <span>深度工作 (Deep work)</span>
+               <span>深度工作</span>
              </li>
           </ul>
         </div>
@@ -101,7 +101,7 @@ const principles = [
       <section class="max-w-2xl mx-auto w-full glass-card rounded-3xl p-8 md:p-12 border border-white/5">
         <div class="flex items-center justify-between mb-8">
           <h2 class="text-2xl font-black italic tracking-tight">每日数字清理</h2>
-          <span class="text-xs font-bold uppercase tracking-widest text-white/30">Daily Declutter</span>
+          <span class="text-xs font-bold uppercase tracking-widest text-white/30">日常检查</span>
         </div>
         
         <div class="flex flex-col gap-4">

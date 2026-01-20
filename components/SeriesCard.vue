@@ -1,5 +1,6 @@
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { Series } from '../types';
 
 defineProps<{
@@ -10,6 +11,16 @@ defineEmits<{
   (e: 'delete', id: string): void;
   (e: 'edit', series: Series): void;
 }>();
+
+const isLoggedIn = ref(false);
+const checkAuth = () => {
+    isLoggedIn.value = !!localStorage.getItem('auth_token');
+};
+
+onMounted(() => {
+    checkAuth();
+    window.addEventListener('auth-change', checkAuth);
+});
 </script>
 
 <template>
@@ -44,13 +55,11 @@ defineEmits<{
         <span class="text-xs font-bold uppercase tracking-widest text-accent group-hover/btn:mr-2 transition-all">
           浏览专题
         </span>
-        <span class="material-symbols-outlined text-lg text-accent">
-          arrow_forward
-        </span>
+
       </div>
     </div>
   </router-link>
-  <div class="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+  <div v-if="isLoggedIn" class="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
     <button 
       @click.prevent="$emit('edit', series)"
       class="size-8 rounded-full bg-black/50 backdrop-blur border border-white/10 hover:bg-accent flex items-center justify-center text-white/70 hover:text-white transition-all"
